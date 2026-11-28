@@ -1,0 +1,13 @@
+name: Manter Supabase ativo
+
+on:
+  schedule:
+    - cron: "0 12 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acessar o banco
+        run: curl -fsS "https://qgxjwfcvudqrksfmcgpv.supabase.co/rest/v1/config?select=aberto&id=eq.1" -H "apikey: sb_publishable_76SoYCQg-WsT8Wqo2Tw67w_-UzjkxBb" > /dev/null
