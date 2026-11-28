@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Painel · PRADO BARBEARIA 💈</title>
+<style>
+:root{--bg:#050505;--card:#16120a;--gold:#d4a73a;--gold2:#f3d27a;--txt:#f5efe0;--mut:#a89c80;--bad:#ff9a8a;--line:#3a2f14;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--txt);font-family:Georgia,"Times New Roman",serif;line-height:1.4;background:radial-gradient(circle at 50% 0,#1a1405 0,#050505 55%) fixed,#050505}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+h1{margin:0;font-size:24px;letter-spacing:1px;color:var(--gold2)}
+h2{font-size:18px;color:var(--gold);margin:22px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:10px}
+label{display:block;font-size:14px;color:var(--mut);margin:12px 0 5px}
+input[type=text],input[type=email],input[type=password],input[type=tel],select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #4a3c18;background:#0f0c06;color:var(--txt);font-size:16px;font-family:inherit}
+textarea{min-height:80px;resize:vertical}
+button{font-family:inherit;font-size:16px;cursor:pointer}
+.btn{display:block;width:100%;margin-top:16px;padding:14px;border:0;border-radius:12px;background:linear-gradient(#f3d27a,#c9972b);color:#120d03;font-weight:bold}
+.btn:disabled{opacity:.5}
+.ghost{padding:10px 14px;border-radius:10px;border:1px solid var(--gold);background:transparent;color:var(--gold2)}
+.ghost.danger{border-color:#a3402f;color:var(--bad)}
+.ghost.small{padding:8px 12px;font-size:14px}
+.tabs{display:flex;gap:8px;margin-top:16px}
+.tabs button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--gold);background:transparent;color:var(--gold2)}
+.tabs button.on{background:var(--gold);color:#120d03;font-weight:bold}
+.msg{min-height:20px;margin-top:10px;font-size:14px;color:var(--gold2)}
+.msg.erro{color:var(--bad)}
+.row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dotted var(--line)}
+.row:last-child{border:0}
+.hr{font-size:18px;color:var(--gold2);min-width:56px}
+.info{flex:1;min-width:0}
+.info b{display:block;overflow-wrap:anywhere}
+.info span{color:var(--mut);font-size:14px;overflow-wrap:anywhere}
+.livre{color:var(--mut)}
+.bloq{color:var(--bad)}
+.acoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+a.ghost{text-decoration:none;display:inline-block}
+.lote{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.lote .ghost{flex:1}
+.chk{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:16px;color:var(--txt)}
+.chk input{width:22px;height:22px}
+.pbtns{display:flex;gap:8px;margin-top:14px}
+.pbtns .btn{margin:0}
+.pbtns .ghost{flex:0 0 auto}
+.vazio{color:var(--mut);text-align:center;padding:16px 0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <h1>Painel do Prado 💈</h1>
+  <button id="sair" class="ghost small" type="button" hidden>Sair</button>
+</div>
+
+<!-- Login -->
+<section id="login">
+  <div class="card">
+    <label for="email">E-mail</label>
+    <input id="email" type="email" autocomplete="username" inputmode="email">
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" autocomplete="current-password">
+    <button id="entrar" class="btn" type="button">Entrar</button>
+    <div id="loginMsg" class="msg erro"></div>
+  </div>
+</section>
+
+<!-- Painel -->
+<section id="painel" hidden>
+  <div class="tabs">
+    <button id="t1" class="on" type="button">Agenda</button>
+    <button id="t2" type="button">Produtos</button>
+    <button id="t3" type="button">Loja</button>
+  </div>
+  <div id="msg" class="msg"></div>
+
+  <div id="p1">
+    <label for="dia">Dia</label>
+    <select id="dia"></select>
+    <div class="card" id="agenda"></div>
+    <div class="lote">
+      <button id="bloqDia" class="ghost danger" type="button">Bloquear o dia todo</button>
+      <button id="libDia" class="ghost" type="button">Liberar bloqueios do dia</button>
+    </div>
+  </div>
+
+  <div id="p2" hidden>
+    <button id="novoProd" class="btn" type="button">+ Novo produto</button>
+    <div id="listaProd"></div>
+  </div>
+
+  <div id="p3" hidden>
+    <div class="card">
+      <label class="chk"><input id="aberto" type="checkbox"> Barbearia aberta para agendamentos</label>
+      <label for="aviso">Aviso para os clientes (opcional)</label>
+      <textarea id="aviso" maxlength="200" placeholder="Ex.: Hoje fechamos mais cedo."></textarea>
+      <button id="salvarLoja" class="btn" type="button">Salvar</button>
+    </div>
+    <div class="msg" style="color:var(--mut)">Com a loja fechada, ninguém consegue marcar horário no site. O aviso aparece no topo da aba Agendar.</div>
+  </div>
+</section>
+
+</div>
+
+<script>
+var SB_URL = "https://qgxjwfcvudqrksfmcgpv.supabase.co";
+var SB_KEY = "sb_publishable_76SoYCQg-WsT8Wqo2Tw67w_-UzjkxBb";
+var SESSAO_KEY = "prados_admin_sessao";
+
+var $ = function (id) { return document.getElementById(id); };
+var DIAS = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+var HORAS = [];
+for (var h = 16; h <= 21; h++) { HORAS.push(h + ":00"); HORAS.push(h + ":30"); }
+
+/* ---------- utilidades ---------- */
+function el(tag, cls, texto) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (texto !== undefined) e.textContent = texto;
+  return e;
+}
+function botao(texto, cls, fn) {
+  var b = el("button", cls, texto); b.type = "button"; b.onclick = fn; return b;
+}
+function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function br(d) { return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0"); }
+function dinheiro(n) { return Number(n).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+function numero(v) {
+  v = String(v).trim().replace(/[^\d.,]/g, "");
+  if (v.indexOf(",") > -1) v = v.replace(/\./g, "").replace(",", ".");
+  return parseFloat(v);
+}
+function aviso(texto, erro) {
+  var m = $("msg"); m.textContent = texto || ""; m.className = "msg" + (erro ? " erro" : "");
+}
+
+/* ---------- sessão ---------- */
+var S = null;
+try { S = JSON.parse(localStorage.getItem(SESSAO_KEY) || "null"); } catch (e) { S = null; }
+function guardar(s) {
+  S = s;
+  try { if (s) localStorage.setItem(SESSAO_KEY, JSON.stringify(s)); else localStorage.removeItem(SESSAO_KEY); } catch (e) {}
+}
+async function renovar() {
+  if (!S || !S.refresh) return false;
+  try {
+    var r = await fetch(SB_URL + "/auth/v1/token?grant_type=refresh_token", {
+      method: "POST",
+      headers: { apikey: SB_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: S.refresh })
+    });
+    if (!r.ok) return false;
+    var j = await r.json();
+    guardar({ access: j.access_token, refresh: j.refresh_token });
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---------- chamadas ao banco ---------- */
+async function api(caminho, op, jaRenovou) {
+  op = op || {};
+  var h = { apikey: SB_KEY, "Content-Type": "application/json", Authorization: "Bearer " + (S ? S.access : "") };
+  if (op.prefer) h.Prefer = op.prefer;
+  var r = await fetch(SB_URL + "/rest/v1/" + caminho, {
+    method: op.method || "GET",
+    headers: h,
+    body: op.body !== undefined ? JSON.stringify(op.body) : undefined
+  });
+  if (r.status === 401 && !jaRenovou) {
+    if (await renovar()) return api(caminho, op, true);
+    sairDaConta();
+    throw new Error("Sessão expirada. Entre de novo.");
+  }
+  return r;
+}
+
+/* ---------- login ---------- */
+async function entrar() {
+  var email = $("email").value.trim(), senha = $("senha").value;
+  $("loginMsg").textContent = "";
+  if (!email || !senha) { $("loginMsg").textContent = "Digite o e-mail e a senha."; return; }
+  $("entrar").disabled = true;
+  try {
+    var r = await fetch(SB_URL + "/auth/v1/token?grant_type=password", {
+      method: "POST",
+      headers: { apikey: SB_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: senha })
+    });
+    if (!r.ok) { $("loginMsg").textContent = "E-mail ou senha incorretos."; return; }
+    var j = await r.json();
+    guardar({ access: j.access_token, refresh: j.refresh_token });
+    $("senha").value = "";
+    if (await ehDono()) { abrirPainel(); }
+    else {
+      guardar(null);
+      $("loginMsg").textContent = "Esse usuário ainda não está liberado como dono. Rode de novo o final do SQL (parte 6) no Supabase.";
+    }
+  } catch (e) {
+    $("loginMsg").textContent = "Sem conexão. Tente de novo.";
+  } finally {
+    $("entrar").disabled = false;
+  }
+}
+async function ehDono() {
+  try {
+    var r = await api("rpc/is_admin", { method: "POST", body: {} });
+    return r.ok && (await r.json()) === true;
+  } catch (e) { return false; }
+}
+function sairDaConta() {
+  guardar(null);
+  $("painel").hidden = true; $("sair").hidden = true; $("login").hidden = false;
+}
+$("entrar").onclick = entrar;
+$("senha").onkeydown = function (e) { if (e.key === "Enter") entrar(); };
+$("sair").onclick = sairDaConta;
+
+/* ---------- abas ---------- */
+function aba(n) {
+  ["p1", "p2", "p3"].forEach(function (id, i) { $(id).hidden = n !== i + 1; $("t" + (i + 1)).className = n === i + 1 ? "on" : ""; });
+  aviso("");
+  if (n === 1) carregarAgenda();
+  if (n === 2) carregarProdutos();
+  if (n === 3) carregarLoja();
+}
+$("t1").onclick = function () { aba(1); };
+$("t2").onclick = function () { aba(2); };
+$("t3").onclick = function () { aba(3); };
+
+function abrirPainel() {
+  $("login").hidden = true; $("painel").hidden = false; $("sair").hidden = false;
+  var hoje = new Date(), sel = $("dia"); sel.innerHTML = "";
+  for (var i = 0; i < 30; i++) {
+    var d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + i);
+    var o = el("option", "", (i === 0 ? "Hoje" : i === 1 ? "Amanhã" : DIAS[d.getDay()]) + " · " + br(d));
+    o.value = iso(d); sel.appendChild(o);
+  }
+  aba(1);
+}
+
+/* ---------- agenda ---------- */
+async function carregarAgenda() {
+  var dia = $("dia").value, box = $("agenda");
+  try {
+    var r = await api("agendamentos?select=*&dia=eq." + dia + "&order=hora.asc");
+    if (!r.ok) throw new Error("Não foi possível carregar a agenda.");
+    var lista = await r.json(), mapa = {};
+    lista.forEach(function (a) { mapa[a.hora.slice(0, 5)] = a; });
+    box.innerHTML = "";
+    HORAS.forEach(function (hora) {
+      var a = mapa[hora], linha = el("div", "row"), info = el("div", "info"), acoes = el("div", "acoes");
+      linha.appendChild(el("span", "hr", hora));
+      if (!a) {
+        info.appendChild(el("span", "livre", "Livre"));
+        acoes.appendChild(botao("Bloquear", "ghost small", function () { bloquear(hora); }));
+      } else if (a.bloqueio) {
+        info.appendChild(el("b", "bloq", "Bloqueado"));
+        acoes.appendChild(botao("Liberar", "ghost small", function () { remover(a, "Liberar este horário?"); }));
+      } else {
+        info.appendChild(el("b", "", a.nome));
+        info.appendChild(el("span", "", a.servico + " · " + a.telefone));
+        var d = a.telefone.replace(/\D/g, ""); if (d.length <= 11) d = "55" + d;
+        var wa = el("a", "ghost small", "WhatsApp"); wa.href = "https://wa.me/" + d; wa.target = "_blank"; wa.rel = "noopener";
+        acoes.appendChild(wa);
+        acoes.appendChild(botao("Cancelar", "ghost small danger", function () { remover(a, "Cancelar o horário de " + a.nome + "?"); }));
+      }
+      linha.appendChild(info); linha.appendChild(acoes); box.appendChild(linha);
+    });
+  } catch (e) { aviso(e.message, true); }
+}
+async function bloquear(hora) {
+  try {
+    var r = await api("agendamentos", { method: "POST", prefer: "return=minimal", body: { dia: $("dia").value, hora: hora, bloqueio: true, nome: "Bloqueado" } });
+    if (!r.ok && r.status !== 409) throw new Error("Não foi possível bloquear.");
+    carregarAgenda();
+  } catch (e) { aviso(e.message, true); }
+}
+async function remover(a, pergunta) {
+  if (!confirm(pergunta)) return;
+  try {
+    var r = await api("agendamentos?id=eq." + a.id, { method: "DELETE", prefer: "return=minimal" });
+    if (!r.ok) throw new Error("Não foi possível concluir.");
+    carregarAgenda();
+  } catch (e) { aviso(e.message, true); }
+}
+$("dia").onchange = carregarAgenda;
+$("bloqDia").onclick = async function () {
+  if (!confirm("Bloquear todos os horários livres deste dia?")) return;
+  var dia = $("dia").value;
+  try {
+    var corpo = HORAS.map(function (h) { return { dia: dia, hora: h, bloqueio: true, nome: "Bloqueado" }; });
+    var r = await api("agendamentos?on_conflict=dia,hora", { method: "POST", prefer: "resolution=ignore-duplicates,return=minimal", body: corpo });
+    if (!r.ok) throw new Error("Não foi possível bloquear o dia.");
+    carregarAgenda();
+  } catch (e) { aviso(e.message, true); }
+};
+$("libDia").onclick = async function () {
+  if (!confirm("Liberar todos os bloqueios deste dia? Os clientes agendados continuam.")) return;
+  try {
+    var r = await api("agendamentos?dia=eq." + $("dia").value + "&bloqueio=eq.true", { method: "DELETE", prefer: "return=minimal" });
+    if (!r.ok) throw new Error("Não foi possível liberar.");
+    carregarAgenda();
+  } catch (e) { aviso(e.message, true); }
+};
+
+/* ---------- produtos ---------- */
+function campo(rotulo, input) {
+  var d = el("div"); d.appendChild(el("label", "", rotulo)); d.appendChild(input); return d;
+}
+function cartaoProduto(p) {
+  var novo = !p; p = p || { nome: "", preco: "", descricao: "", ativo: true };
+  var c = el("div", "card");
+  var nome = el("input"); nome.type = "text"; nome.maxLength = 80; nome.value = p.nome;
+  var preco = el("input"); preco.type = "text"; preco.inputMode = "decimal"; preco.placeholder = "25,00";
+  preco.value = novo ? "" : String(Number(p.preco).toFixed(2)).replace(".", ",");
+  var desc = el("input"); desc.type = "text"; desc.maxLength = 200; desc.value = p.descricao;
+  var ativo = el("input"); ativo.type = "checkbox"; ativo.checked = p.ativo;
+  var chk = el("label", "chk"); chk.appendChild(ativo); chk.appendChild(document.createTextNode(" Aparece no site"));
+  c.appendChild(campo("Nome do produto", nome));
+  c.appendChild(campo("Preço (R$)", preco));
+  c.appendChild(campo("Descrição (opcional)", desc));
+  c.appendChild(chk);
+  var bt = el("div", "pbtns");
+  bt.appendChild(botao(novo ? "Adicionar" : "Salvar", "btn", async function () {
+    var n = nome.value.trim(), v = numero(preco.value);
+    if (!n) { aviso("Digite o nome do produto.", true); return; }
+    if (!isFinite(v) || v < 0) { aviso("Digite um preço válido, como 25,00.", true); return; }
+    var corpo = { nome: n, preco: Math.round(v * 100) / 100, descricao: desc.value.trim(), ativo: ativo.checked };
+    try {
+      var r = novo
+        ? await api("produtos", { method: "POST", prefer: "return=minimal", body: corpo })
+        : await api("produtos?id=eq." + p.id, { method: "PATCH", prefer: "return=minimal", body: corpo });
+      if (!r.ok) throw new Error("Não foi possível salvar.");
+      aviso(novo ? "Produto adicionado." : "Produto salvo.");
+      carregarProdutos();
+    } catch (e) { aviso(e.message, true); }
+  }));
+  if (novo) {
+    bt.appendChild(botao("Cancelar", "ghost", function () { c.remove(); }));
+  } else {
+    bt.appendChild(botao("Excluir", "ghost danger", async function () {
+      if (!confirm("Excluir " + p.nome + "?")) return;
+      try {
+        var r = await api("produtos?id=eq." + p.id, { method: "DELETE", prefer: "return=minimal" });
+        if (!r.ok) throw new Error("Não foi possível excluir.");
+        carregarProdutos();
+      } catch (e) { aviso(e.message, true); }
+    }));
+  }
+  c.appendChild(bt);
+  return c;
+}
+async function carregarProdutos() {
+  var box = $("listaProd");
+  try {
+    var r = await api("produtos?select=*&order=ordem.asc,nome.asc");
+    if (!r.ok) throw new Error("Não foi possível carregar os produtos.");
+    var lista = await r.json();
+    box.innerHTML = "";
+    if (!lista.length) box.appendChild(el("div", "vazio", "Nenhum produto ainda. Toque em “Novo produto”."));
+    lista.forEach(function (p) { box.appendChild(cartaoProduto(p)); });
+  } catch (e) { aviso(e.message, true); }
+}
+$("novoProd").onclick = function () {
+  var box = $("listaProd");
+  var vazio = box.querySelector(".vazio"); if (vazio) vazio.remove();
+  var c = cartaoProduto(null); box.insertBefore(c, box.firstChild);
+  c.querySelector("input").focus();
+};
+
+/* ---------- loja (aberto / fechado) ---------- */
+async function carregarLoja() {
+  try {
+    var r = await api("config?select=aberto,aviso&id=eq.1");
+    if (!r.ok) throw new Error("Não foi possível carregar a configuração.");
+    var c = (await r.json())[0] || { aberto: true, aviso: "" };
+    $("aberto").checked = c.aberto; $("aviso").value = c.aviso;
+  } catch (e) { aviso(e.message, true); }
+}
+$("salvarLoja").onclick = async function () {
+  try {
+    var r = await api("config?id=eq.1", { method: "PATCH", prefer: "return=minimal", body: { aberto: $("aberto").checked, aviso: $("aviso").value.trim() } });
+    if (!r.ok) throw new Error("Não foi possível salvar.");
+    aviso("Salvo. O site já mostra a mudança.");
+  } catch (e) { aviso(e.message, true); }
+};
+
+/* ---------- início ---------- */
+(async function () {
+  if (S && S.access) {
+    if (await ehDono()) { abrirPainel(); return; }
+    guardar(null);
+  }
+})();
+</script>
+</body>
+</html>
